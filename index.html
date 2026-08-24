@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota de Pedido - Família Goes</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #e9e9e9;
+            color: #101d35;
+            padding: 30px;
+        }
+
+        /* =========================
+           FOLHA
+        ========================= */
+
+        .documento {
+            width: 210mm;
+            margin: 0 auto;
+        }
+
+        .nota {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 18mm 9mm 0;
+        }
+
+        /* =========================
+           DETALHES DECORATIVOS
+        ========================= */
+
+        .nota::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #0b2346;
+        }
+
+        .nota::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 55px;
+            height: 8px;
+            background: #d39b16;
+        }
+
+        /* =========================
+           CABEÇALHO
+        ========================= */
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0b2346;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border: 3px solid #d39b16;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            font-weight: 900;
+            color: #0b2346;
+        }
+
+        .empresa h1 {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .empresa p {
+            margin-top: 3px;
+            color: #d39b16;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .empresa p span {
+            font-size: 18px;
+        }
+
+        .contato {
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .contato strong {
+            color: #0b2346;
+        }
+
+        /* =========================
+           TÍTULO DA NOTA
+        ========================= */
+
+        .titulo-nota {
+            margin-top: 15px;
+            border: 2px solid #0b2346;
+            border-radius: 10px 10px 0 0;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .titulo-esquerda {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icone-nota {
+            width: 48px;
+            height: 48px;
+            background: #0b2346;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .titulo-nota h2 {
+            font-size: 28px;
+            color: #0b2346;
+            border-bottom: 3px solid #d39b16;
+            padding-bottom: 3px;
+        }
+
+        .data {
+            text-align: right;
+        }
+
+        .data small {
+            display: block;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        .data strong {
+            font-size: 18px;
+        }
+
+        /* =========================
+           DADOS DO CLIENTE
+        ========================= */
+
+        .cliente {
+            border: 2px solid #0b2346;
+            border-top: none;
+            padding: 13px 15px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .linha {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .linha:last-child {
+            margin-bottom: 0;
+        }
+
+        .campo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .campo strong {
+            white-space: nowrap;
+        }
+
+        .valor {
+            flex: 1;
+            border-bottom: 1px solid #555;
+            min-height: 18px;
+            padding-left: 5px;
+        }
+
+        [contenteditable="true"] {
+            cursor: text;
+        }
+
+        [contenteditable="true"]:focus {
+            outline: 2px solid #d39b16;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        .cliente-nome {
+            font-family: "Brush Script MT", cursive;
+            font-size: 22px;
+        }
+
+        /* =========================
+           SEPARADOR
+        ========================= */
+
+        .separador {
+            border-top: 2px dotted #0b2346;
+            margin: 15px 0;
+        }
+
+        /* =========================
+           TABELA
+        ========================= */
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border: 2px solid #0b2346;
+            border-radius: 9px;
+            font-size: 12px;
+        }
+
+        thead {
+            background: #0b2346;
+            color: white;
+        }
+
+        th {
+            padding: 11px 7px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 8px 7px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            height: 36px;
+        }
+
+        tbody tr:first-child td {
+            border-top: none;
+        }
+
+        td.produto {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        td.quantidade {
+            width: 70px;
+            font-weight: bold;
+        }
+
+        td.preco {
+            width: 115px;
+        }
+
+        td.total {
+            width: 120px;
+            font-weight: bold;
+        }
+
+        .controles-produtos {
+            display: flex;
+            align-items: end;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid #d8dde6;
+            border-radius: 8px;
+            background: #f7f8fa;
+        }
+
+        .controle-campo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .controle-campo label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #0b2346;
+        }
+
+        .controle-campo input {
+            width: 100%;
+            min-height: 34px;
+            padding: 7px 8px;
+            border: 1px solid #aeb7c5;
+            border-radius: 5px;
+            font: inherit;
+        }
+
+        .botao-produto,
+        .botao-remover {
+            min-height: 34px;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .botao-produto {
+            background: #0b2346;
+            color: white;
+        }
+
+        .botao-remover {
+            background: #f3dede;
+            color: #9b1c1c;
+            font-size: 11px;
+        }
+
+        .acoes-documento {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .botao-imprimir {
+            min-height: 36px;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            background: #d39b16;
+            color: #101d35;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        th.acoes,
+        td.acoes {
+            width: 75px;
+        }
+
+        @media print {
+            .controles-produtos,
+            th.acoes,
+            td.acoes,
+            .acoes-documento {
+                display: none;
+            }
+        }
+
+        /* =========================
+           PARTE FINAL
+        ========================= */
+
+        .final {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 20px;
+        }
+
+        .agradecimento {
+            font-family: "Brush Script MT", cursive;
+            font-size: 23px;
+            color: #0b2346;
+        }
+
+        .agradecimento small {
+            display: block;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            color: #d39b16;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+
+        .total-geral {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .total-label {
+            border: 2px solid #0b2346;
+            border-right: none;
+            padding: 13px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 7px 0 0 7px;
+        }
+
+        .total-valor {
+            background: #0b2346;
+            color: white;
+            border: 3px solid #d39b16;
+            padding: 12px 25px;
+            font-size: 23px;
+            font-weight: 900;
+            border-radius: 9px;
+        }
+
+        /* =========================
+           RODAPÉ
+        ========================= */
+
+        .rodape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #0b2346;
+            color: white;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px 20px;
+        }
+
+        .rodape-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 0 20px;
+            border-right: 1px solid #d39b16;
+        }
+
+        .rodape-item:last-child {
+            border: none;
+        }
+
+        .rodape-icone {
+            color: #d39b16;
+            font-size: 18px;
+        }
+
+        .rodape-frase {
+            color: #d39b16;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .rodape-frase strong {
+            display: block;
+            color: white;
+            font-style: normal;
+            letter-spacing: 1px;
+        }
+
+        /* =========================
+           IMPRESSÃO
+        ========================= */
+
+        @media print {
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .documento {
+                width: 100%;
+            }
+
+            .nota {
+                width: 210mm;
+                height: 297mm;
+                min-height: 297mm;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+                page-break-after: always;
+            }
+
+            .nota:last-child {
+                page-break-after: auto;
+            }
+        }
+
+        /* =========================
+           RESPONSIVO
+        ========================= */
+
+        @media screen and (max-width: 900px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .nota {
+                width: 100%;
+                min-height: auto;
+                padding-bottom: 70px;
+            }
+
+            .cabecalho {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .contato {
+                text-align: left;
+            }
+
+            .titulo-nota {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .data {
+                text-align: left;
+            }
+
+            .linha {
+                flex-direction: column;
+            }
+
+            .final {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .total-geral {
+                width: 100%;
+            }
+
+            .total-label,
+            .total-valor {
+                flex: 1;
+            }
+
+            .rodape {
+                position: relative;
+                margin-top: 20px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .rodape-item {
+                border-right: none;
+            }
+
+            table {
+                font-size: 10px;
+            }
+
+            .controles-produtos {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="documento">
+
+    <div class="acoes-documento">
+        <button class="botao-imprimir" id="botao-imprimir" type="button">IMPRIMIR / SALVAR PDF</button>
+    </div>
+
+    <section class="nota">
+
+        <!-- CABEÇALHO -->
+
+        <header class="cabecalho">
+
+            <div class="marca">
+
+                <div class="logo">
+                    F
+                </div>
+
+                <div class="empresa">
+
+                    <h1>FAMILIA GOES</h1>
+
+                    <p>
+                        ELETRICA E VARIEDADES
+                        <span>⚡</span>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="contato">
+
+                📍 <strong>Rua Periquito 16</strong><br>
+
+                Jardim Nova Vitória<br>
+
+                📷 @FAMILIAGOESELETRICAEVARIEDADES
+
+            </div>
+
+        </header>
+
+
+        <!-- TÍTULO -->
+
+        <div class="titulo-nota">
+
+            <div class="titulo-esquerda">
+
+                <div class="icone-nota">
+                    📝
+                </div>
+
+                <h2>NOTA DE PEDIDOS</h2>
+
+            </div>
+
+            <div class="data">
+
+                <small>📅 DATA DO PEDIDO:</small>
+
+                <strong contenteditable="true" spellcheck="false">15/08/2026</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLIENTE -->
+
+        <div class="cliente">
+
+            <div class="linha">
+
+                <div class="campo">
+
+                    <strong>👤 CLIENTE:</strong>
+
+                    <div class="valor cliente-nome" contenteditable="true" spellcheck="false">Helena</div>
+
+                </div>
+
+            </div>
+
+            <div class="linha">
+
+                <div class="campo">
+
+                    <strong>📍 END.:</strong>
+
+                    <div class="valor" contenteditable="true" spellcheck="false"></div>
+
+                </div>
+
+            </div>
+
+            <div class="linha">
+
+                <div class="campo">
+
+                    <strong>🪪 CPF/CNPJ:</strong>
+
+                    <div class="valor" contenteditable="true" spellcheck="false"></div>
+
+                </div>
+
+                <div class="campo">
+
+                    <strong>📞 FONE:</strong>
+
+                    <div class="valor" contenteditable="true" spellcheck="false"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="separador"></div>
+
+
+        <form class="controles-produtos" id="form-produto">
+            <div class="controle-campo">
+                <label for="novo-produto">PRODUTO</label>
+                <input id="novo-produto" type="text" placeholder="Nome do produto" required>
+            </div>
+            <div class="controle-campo">
+                <label for="nova-quantidade">QNTD</label>
+                <input id="nova-quantidade" type="number" min="0" step="any" placeholder="0" required>
+            </div>
+            <div class="controle-campo">
+                <label for="novo-preco">PREÇO UNIT.</label>
+                <input id="novo-preco" type="text" inputmode="decimal" placeholder="0,00" required>
+            </div>
+            <button class="botao-produto" type="submit">ADICIONAR</button>
+        </form>
+
+
+        <!-- TABELA DE PRODUTOS -->
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>QNTD</th>
+
+                    <th>PRODUTO</th>
+
+                    <th>PREÇO UNIT</th>
+
+                    <th>TOTAL</th>
+
+                    <th class="acoes">AÇÃO</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <!-- LINHAS PARA PREENCHER -->
+
+                <tr data-quantidade="65">
+                    <td class="quantidade"></td>
+                    <td class="produto">65m de fio 2,5mm</td>
+                    <td class="preco">3,50</td>
+                    <td class="total">227,50</td>
+                </tr>
+
+                <tr>
+                    <td class="quantidade">1</td>
+                    <td class="produto">fita isolante</td>
+                    <td class="preco">13,00</td>
+                    <td class="total">13,00</td>
+                </tr>
+
+                <tr>
+                    <td class="quantidade">2</td>
+                    <td class="produto">Sacos de areia</td>
+                    <td class="preco">7,00</td>
+                    <td class="total">14,00</td>
+                </tr>
+
+                <tr>
+                    <td class="quantidade">3</td>
+                    <td class="produto">Caixinha 2x4</td>
+                    <td class="preco">3,50</td>
+                    <td class="total">10,50</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <!-- FINAL -->
+
+        <div class="final">
+
+            <div class="agradecimento">
+
+                Obrigado pela preferência! ♡
+
+                <small>
+                    DEUS ABENÇOE!
+                </small>
+
+            </div>
+
+
+            <div class="total-geral">
+
+                <div class="total-label">
+                    TOTAL GERAL:
+                </div>
+
+                <div class="total-valor">
+                    R$ 265,00
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RODAPÉ -->
+
+        <footer class="rodape">
+
+            <div class="rodape-item">
+
+                <span class="rodape-icone">🛡</span>
+
+                QUALIDADE
+
+            </div>
+
+
+            <div class="rodape-item">
+
+                <span class="rodape-icone">⚡</span>
+
+                SEGURANÇA
+
+            </div>
+
+
+            <div class="rodape-item">
+
+                <span class="rodape-icone">🏅</span>
+
+                CONFIANÇA
+
+            </div>
+
+
+            <div class="rodape-frase">
+
+                Tudo que você precisa em
+
+                <strong>
+                    ELÉTRICA E VARIEDADES!
+                </strong>
+
+            </div>
+
+        </footer>
+
+    </section>
+
+</div>
+
+    <script>
+        function converterNumero(valor) {
+            const texto = valor.trim();
+            const normalizado = texto.includes(",")
+                ? texto.replace(/\./g, "").replace(",", ".")
+                : texto;
+
+            return Number.parseFloat(normalizado) || 0;
+        }
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function atualizarTotais() {
+            let totalGeral = 0;
+
+            document.querySelectorAll("tbody tr").forEach((linha) => {
+                const quantidadeCelula = linha.querySelector(".quantidade");
+                const quantidade = converterNumero(linha.dataset.quantidade || quantidadeCelula.textContent);
+                const precoUnitario = converterNumero(linha.querySelector(".preco").textContent);
+                const total = quantidade * precoUnitario;
+
+                linha.querySelector(".total").textContent = formatarMoeda(total);
+                totalGeral += total;
+            });
+
+            document.querySelector(".total-valor").textContent = `R$ ${formatarMoeda(totalGeral)}`;
+        }
+
+        function adicionarBotaoRemover(linha) {
+            const celulaAcao = document.createElement("td");
+            celulaAcao.className = "acoes";
+
+            const botao = document.createElement("button");
+            botao.className = "botao-remover";
+            botao.type = "button";
+            botao.textContent = "REMOVER";
+            botao.addEventListener("click", () => {
+                linha.remove();
+                atualizarTotais();
+            });
+
+            celulaAcao.appendChild(botao);
+            linha.appendChild(celulaAcao);
+        }
+
+        document.querySelectorAll("tbody tr").forEach(adicionarBotaoRemover);
+
+        document.querySelector("#form-produto").addEventListener("submit", (evento) => {
+            evento.preventDefault();
+
+            const nome = document.querySelector("#novo-produto").value.trim();
+            const quantidade = document.querySelector("#nova-quantidade").value;
+            const preco = document.querySelector("#novo-preco").value.trim();
+            const linha = document.createElement("tr");
+
+            [
+                ["quantidade", quantidade],
+                ["produto", nome],
+                ["preco", preco],
+                ["total", ""]
+            ].forEach(([classe, valor]) => {
+                const celula = document.createElement("td");
+                celula.className = classe;
+                celula.textContent = valor;
+                linha.appendChild(celula);
+            });
+
+            document.querySelector("tbody").appendChild(linha);
+            adicionarBotaoRemover(linha);
+            evento.target.reset();
+            atualizarTotais();
+        });
+
+        document.querySelector("#botao-imprimir").addEventListener("click", () => {
+            window.print();
+        });
+
+        atualizarTotais();
+    </script>
+
+</body>
+</html>
