@@ -521,6 +521,10 @@
                 padding: 10px;
             }
 
+            .documento {
+                width: 100%;
+            }
+
             .nota {
                 width: 100%;
                 min-height: auto;
@@ -578,11 +582,58 @@
 
             table {
                 font-size: 10px;
+                table-layout: fixed;
+                word-break: break-word;
+            }
+
+            th,
+            td {
+                padding: 7px 3px;
+            }
+
+            th,
+            td.quantidade {
+                width: 12%;
+            }
+
+            td.produto {
+                width: 42%;
+            }
+
+            td.preco,
+            td.total {
+                width: 18%;
+            }
+
+            th.acoes,
+            td.acoes {
+                width: 18%;
+            }
+
+            .botao-remover {
+                width: 100%;
+                padding: 6px 2px;
+                font-size: 9px;
             }
 
             .controles-produtos {
                 align-items: stretch;
                 flex-direction: column;
+            }
+
+            .empresa h1 {
+                font-size: 24px;
+            }
+
+            .titulo-nota h2 {
+                font-size: 21px;
+            }
+
+            .logo {
+                flex: 0 0 60px;
+                width: 60px;
+                height: 60px;
+                font-size: 42px;
             }
         }
     </style>
